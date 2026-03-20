@@ -9,6 +9,7 @@
 Welcome to the Parallel Programming Course!
 
 Resources:
+
 - Documentation (full instructions and quick start):
   [English](https://learning-process.github.io/parallel_programming_course/en/),
   [Russian](https://learning-process.github.io/parallel_programming_course/ru/)
