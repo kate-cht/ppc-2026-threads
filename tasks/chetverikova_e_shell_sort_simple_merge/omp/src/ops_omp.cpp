@@ -84,12 +84,11 @@ bool ChetverikovaEShellSortSimpleMergeOMP::RunImpl() {
 
   output = std::move(local_buffers[0]);
   for (size_t i = 1; i < counts_parts; ++i) {
-      std::vector<int> merged;
-      merged.reserve(output.size() + local_buffers[i].size());
-      std::merge(output.begin(), output.end(),
-                  local_buffers[i].begin(), local_buffers[i].end(),
-                  std::back_inserter(merged));
-      output = std::move(merged);
+    std::vector<int> merged;
+    merged.reserve(output.size() + local_buffers[i].size());
+    std::merge(output.begin(), output.end(), local_buffers[i].begin(), local_buffers[i].end(),
+               std::back_inserter(merged));
+    output = std::move(merged);
   }
 
   return true;
