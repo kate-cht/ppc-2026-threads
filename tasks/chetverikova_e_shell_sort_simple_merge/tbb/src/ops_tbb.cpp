@@ -62,44 +62,38 @@ bool ChetverikovaEShellSortSimpleMergeTBB::RunImpl() {
   const size_t block_size = (n + num_threads - 1) / num_threads;
   std::vector<std::vector<int>> blocks(num_threads);
 
-  tbb::parallel_for(
-      tbb::blocked_range<size_t>(0, num_threads),
-      [&](const tbb::blocked_range<size_t>& r) {
-        for (size_t b = r.begin(); b < r.end(); ++b) {
+  tbb::parallel_for(tbb::blocked_range<size_t>(0, num_threads), [&](const tbb::blocked_range<size_t> &r) {
+    for (size_t b = r.begin(); b < r.end(); ++b) {
+      size_t start = b * block_size;
+      size_t end = std::min(start + block_size, n);
 
-          size_t start = b * block_size;
-          size_t end = std::min(start + block_size, n);
-
-          if (start >= n) {
-            continue;
-          }
-
-          std::vector<int> local;
-          local.reserve(end - start);
-
-          for (size_t i = start; i < end; ++i) {
-            local.push_back(input[i]);
-          }
-
-          ShellSort(local);
-
-          blocks[b] = std::move(local);
-        }
+      if (start >= n) {
+        continue;
       }
-  );
+
+      std::vector<int> local;
+      local.reserve(end - start);
+
+      for (size_t i = start; i < end; ++i) {
+        local.push_back(input[i]);
+      }
+
+      ShellSort(local);
+
+      blocks[b] = std::move(local);
+    }
+  });
 
   std::vector<int> result = std::move(blocks[0]);
 
   for (size_t i = 1; i < num_threads; ++i) {
-    if (blocks[i].empty()) continue;
+    if (blocks[i].empty()) {
+      continue;
+    }
 
     std::vector<int> tmp(result.size() + blocks[i].size());
 
-    std::merge(
-        result.begin(), result.end(),
-        blocks[i].begin(), blocks[i].end(),
-        tmp.begin()
-    );
+    std::merge(result.begin(), result.end(), blocks[i].begin(), blocks[i].end(), tmp.begin());
 
     result.swap(tmp);
   }
