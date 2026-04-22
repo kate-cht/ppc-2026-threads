@@ -4,7 +4,6 @@
 
 #include <algorithm>
 #include <cstddef>
-#include <iterator>
 #include <utility>
 #include <vector>
 
@@ -63,8 +62,8 @@ bool ChetverikovaEShellSortSimpleMergeTBB::RunImpl() {
   std::vector<std::vector<int>> blocks(num_threads);
 
   tbb::parallel_for(tbb::blocked_range<size_t>(0, num_threads), [&](const tbb::blocked_range<size_t> &r) {
-    for (size_t b = r.begin(); b < r.end(); ++b) {
-      size_t start = b * block_size;
+    for (size_t block_id = r.begin(); block_id < r.end(); ++block_id) {
+      size_t start = block_id * block_size;
       size_t end = std::min(start + block_size, n);
 
       if (start >= n) {
@@ -80,7 +79,7 @@ bool ChetverikovaEShellSortSimpleMergeTBB::RunImpl() {
 
       ShellSort(local);
 
-      blocks[b] = std::move(local);
+      blocks[block_id] = std::move(local);
     }
   });
 
