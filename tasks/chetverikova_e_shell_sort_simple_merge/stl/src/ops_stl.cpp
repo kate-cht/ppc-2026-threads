@@ -54,14 +54,14 @@ bool ChetverikovaEShellSortSimpleMergeSTL::RunImpl() {
     return true;
   }
 
-  const int num_threads = ppc::util::GetNumThreads();
+  const size_t num_threads = ppc::util::GetNumThreads();
   const size_t n = input.size();
 
   const size_t block_size = (n + num_threads - 1) / num_threads;
   std::vector<std::vector<int>> blocks(num_threads);
   std::vector<std::thread> threads(num_threads);
 
-  for (int tid = 0; tid < num_threads; ++tid) {
+  for (size_t tid = 0; tid < num_threads; ++tid) {
     threads[tid] = std::thread([&, tid]() {
       size_t start = tid * block_size;
       size_t end = std::min(start + block_size, n);
