@@ -58,8 +58,7 @@ bool ChetverikovaEShellSortSimpleMergeSEQ::RunImpl() {
   ShellSort(right);
 
   std::vector<int> merged(left.size() + right.size());
-  std::merge(left.begin(), left.end(), right.begin(), right.end(),
-               merged.begin());
+  std::merge(left.begin(), left.end(), right.begin(), right.end(), merged.begin());
   output = std::move(merged);
 
   return true;
