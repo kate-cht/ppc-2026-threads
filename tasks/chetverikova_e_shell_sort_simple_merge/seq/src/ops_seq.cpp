@@ -42,29 +42,6 @@ void ChetverikovaEShellSortSimpleMergeSEQ::ShellSort(std::vector<int> &data) {
   }
 }
 
-std::vector<int> ChetverikovaEShellSortSimpleMergeSEQ::MergeSort(const std::vector<int> &left,
-                                                                 const std::vector<int> &right) {
-  std::vector<int> result;
-  result.reserve(left.size() + right.size());
-  size_t i = 0;
-  size_t j = 0;
-  while (i < left.size() && j < right.size()) {
-    if (left[i] <= right[j]) {
-      result.push_back(left[i++]);
-    } else {
-      result.push_back(right[j++]);
-    }
-  }
-  while (i < left.size()) {
-    result.push_back(left[i++]);
-  }
-  while (j < right.size()) {
-    result.push_back(right[j++]);
-  }
-
-  return result;
-}
-
 bool ChetverikovaEShellSortSimpleMergeSEQ::RunImpl() {
   const auto &input = GetInput();
   auto &output = GetOutput();
@@ -80,7 +57,10 @@ bool ChetverikovaEShellSortSimpleMergeSEQ::RunImpl() {
   ShellSort(left);
   ShellSort(right);
 
-  output = MergeSort(left, right);
+  std::vector<int> merged(left.size() + right.size());
+  std::merge(left.begin(), left.end(), right.begin(), right.end(),
+               merged.begin());
+  output = std::move(merged);
 
   return true;
 }
