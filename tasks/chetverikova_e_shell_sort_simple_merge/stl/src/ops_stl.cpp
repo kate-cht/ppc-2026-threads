@@ -1,9 +1,8 @@
 #include "chetverikova_e_shell_sort_simple_merge/stl/include/ops_stl.hpp"
 
-#include <thread>
-
 #include <algorithm>
 #include <cstddef>
+#include <thread>
 #include <utility>
 #include <vector>
 
@@ -57,7 +56,7 @@ bool ChetverikovaEShellSortSimpleMergeSTL::RunImpl() {
 
   const int num_threads = ppc::util::GetNumThreads();
   const size_t n = input.size();
-  
+
   const size_t block_size = (n + num_threads - 1) / num_threads;
   std::vector<std::vector<int>> blocks(num_threads);
   std::vector<std::thread> threads(num_threads);
