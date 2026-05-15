@@ -5,8 +5,9 @@
 #include <thread>
 #include <utility>
 #include <vector>
-#include "util/include/util.hpp"
+
 #include "chetverikova_e_shell_sort_simple_merge/common/include/common.hpp"
+#include "util/include/util.hpp"
 
 namespace chetverikova_e_shell_sort_simple_merge {
 
