@@ -12,6 +12,7 @@
 #include "chetverikova_e_shell_sort_simple_merge/seq/include/ops_seq.hpp"
 #include "chetverikova_e_shell_sort_simple_merge/stl/include/ops_stl.hpp"
 #include "chetverikova_e_shell_sort_simple_merge/tbb/include/ops_tbb.hpp"
+#include "chetverikova_e_shell_sort_simple_merge/all/include/ops_all.hpp"
 #include "util/include/func_test_util.hpp"
 #include "util/include/util.hpp"
 
@@ -82,6 +83,8 @@ const auto kTestTasksList = std::tuple_cat(ppc::util::AddFuncTask<ChetverikovaES
                                            ppc::util::AddFuncTask<ChetverikovaEShellSortSimpleMergeTBB, InType>(
                                                kTestParam, PPC_SETTINGS_chetverikova_e_shell_sort_simple_merge),
                                            ppc::util::AddFuncTask<ChetverikovaEShellSortSimpleMergeSTL, InType>(
+                                               kTestParam, PPC_SETTINGS_chetverikova_e_shell_sort_simple_merge),
+                                           ppc::util::AddFuncTask<ChetverikovaEShellSortSimpleMergeALL, InType>(
                                                kTestParam, PPC_SETTINGS_chetverikova_e_shell_sort_simple_merge));
 
 const auto kGtestValues = ppc::util::ExpandToValues(kTestTasksList);

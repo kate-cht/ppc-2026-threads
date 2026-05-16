@@ -4,11 +4,14 @@
 #include <cstddef>
 #include <random>
 
+#include <mpi.h>
+
 #include "chetverikova_e_shell_sort_simple_merge/common/include/common.hpp"
 #include "chetverikova_e_shell_sort_simple_merge/omp/include/ops_omp.hpp"
 #include "chetverikova_e_shell_sort_simple_merge/seq/include/ops_seq.hpp"
 #include "chetverikova_e_shell_sort_simple_merge/stl/include/ops_stl.hpp"
 #include "chetverikova_e_shell_sort_simple_merge/tbb/include/ops_tbb.hpp"
+#include "chetverikova_e_shell_sort_simple_merge/all/include/ops_all.hpp"
 #include "util/include/perf_test_util.hpp"
 
 namespace chetverikova_e_shell_sort_simple_merge {
@@ -33,6 +36,12 @@ class ChetverikovaERunPerfTestThreads : public ppc::util::BaseRunPerfTests<InTyp
   }
 
   bool CheckTestOutputData(OutType &output_data) final {
+    int rank = 0;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    if (rank != 0) {
+      return true;
+    }
     return expected_data_ == output_data;
   }
 
@@ -49,7 +58,8 @@ namespace {
 
 const auto kAllPerfTasks =
     ppc::util::MakeAllPerfTasks<InType, ChetverikovaEShellSortSimpleMergeSEQ, ChetverikovaEShellSortSimpleMergeOMP,
-                                ChetverikovaEShellSortSimpleMergeTBB, ChetverikovaEShellSortSimpleMergeSTL>(
+                                ChetverikovaEShellSortSimpleMergeTBB, ChetverikovaEShellSortSimpleMergeSTL,
+                                ChetverikovaEShellSortSimpleMergeALL>(
         PPC_SETTINGS_chetverikova_e_shell_sort_simple_merge);
 
 const auto kGtestValues = ppc::util::TupleToGTestValues(kAllPerfTasks);
