@@ -21,7 +21,7 @@ class ChetverikovaEShellSortSimpleMergeALL : public BaseTask {
   bool PostProcessingImpl() override;
 
   static void ShellSort(std::vector<int> &data);
-  std::vector<int> MergeTwoSortedVectors(const std::vector<int>& a, const std::vector<int>& b);
+  std::vector<int> MergeTwoSortedVectors(const std::vector<int> &a, const std::vector<int> &b);
 };
 
 }  // namespace chetverikova_e_shell_sort_simple_merge

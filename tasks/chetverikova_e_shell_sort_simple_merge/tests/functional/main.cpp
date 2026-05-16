@@ -7,12 +7,12 @@
 #include <string>
 #include <tuple>
 
+#include "chetverikova_e_shell_sort_simple_merge/all/include/ops_all.hpp"
 #include "chetverikova_e_shell_sort_simple_merge/common/include/common.hpp"
 #include "chetverikova_e_shell_sort_simple_merge/omp/include/ops_omp.hpp"
 #include "chetverikova_e_shell_sort_simple_merge/seq/include/ops_seq.hpp"
 #include "chetverikova_e_shell_sort_simple_merge/stl/include/ops_stl.hpp"
 #include "chetverikova_e_shell_sort_simple_merge/tbb/include/ops_tbb.hpp"
-#include "chetverikova_e_shell_sort_simple_merge/all/include/ops_all.hpp"
 #include "util/include/func_test_util.hpp"
 #include "util/include/util.hpp"
 

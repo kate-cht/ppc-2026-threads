@@ -44,7 +44,7 @@ bool ChetverikovaEShellSortSimpleMergeALL::PreProcessingImpl() {
   return true;
 }
 
-void ChetverikovaEShellSortSimpleMergeALL::ShellSort(std::vector<int>& data) {
+void ChetverikovaEShellSortSimpleMergeALL::ShellSort(std::vector<int> &data) {
   if (data.empty()) {
     return;
   }
@@ -66,9 +66,8 @@ void ChetverikovaEShellSortSimpleMergeALL::ShellSort(std::vector<int>& data) {
   }
 }
 
-std::vector<int> ChetverikovaEShellSortSimpleMergeALL::MergeTwoSortedVectors(
-    const std::vector<int>& a,
-    const std::vector<int>& b) {
+std::vector<int> ChetverikovaEShellSortSimpleMergeALL::MergeTwoSortedVectors(const std::vector<int> &a,
+                                                                             const std::vector<int> &b) {
   std::vector<int> result;
   result.reserve(a.size() + b.size());
 
@@ -84,7 +83,7 @@ bool ChetverikovaEShellSortSimpleMergeALL::RunImpl() {
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-  auto& output = GetOutput();
+  auto &output = GetOutput();
 
   std::vector<int> local_data;
 
@@ -118,8 +117,8 @@ bool ChetverikovaEShellSortSimpleMergeALL::RunImpl() {
 
   local_data.resize(local_size);
 
-  MPI_Scatterv(rank == 0 ? GetInput().data() : nullptr, sendcounts.data(), displs.data(), MPI_INT,
-               local_data.data(), local_size, MPI_INT, 0, MPI_COMM_WORLD);
+  MPI_Scatterv(rank == 0 ? GetInput().data() : nullptr, sendcounts.data(), displs.data(), MPI_INT, local_data.data(),
+               local_size, MPI_INT, 0, MPI_COMM_WORLD);
 
   const std::size_t threads = std::max(1, omp_get_max_threads());
 
@@ -160,8 +159,7 @@ bool ChetverikovaEShellSortSimpleMergeALL::RunImpl() {
     local_sorted = std::move(local_buffers[0]);
 
     for (size_t i = 1; i < local_buffers.size(); ++i) {
-      local_sorted =
-          MergeTwoSortedVectors(local_sorted, local_buffers[i]);
+      local_sorted = MergeTwoSortedVectors(local_sorted, local_buffers[i]);
     }
   }
 
@@ -182,10 +180,8 @@ bool ChetverikovaEShellSortSimpleMergeALL::RunImpl() {
     output.resize(total_size);
   }
 
-  MPI_Gatherv(local_sorted.data(), local_sorted_size, MPI_INT,
-              rank == 0 ? output.data() : nullptr,
-              recvcounts.data(), recvdispls.data(), MPI_INT,
-              0, MPI_COMM_WORLD);
+  MPI_Gatherv(local_sorted.data(), local_sorted_size, MPI_INT, rank == 0 ? output.data() : nullptr, recvcounts.data(),
+              recvdispls.data(), MPI_INT, 0, MPI_COMM_WORLD);
 
   if (rank == 0) {
     std::vector<std::vector<int>> gathered_parts(size);
@@ -194,16 +190,13 @@ bool ChetverikovaEShellSortSimpleMergeALL::RunImpl() {
       int begin = recvdispls[i];
       int end = begin + recvcounts[i];
 
-      gathered_parts[i] =
-          std::vector<int>(output.begin() + begin,
-                           output.begin() + end);
+      gathered_parts[i] = std::vector<int>(output.begin() + begin, output.begin() + end);
     }
 
     output = std::move(gathered_parts[0]);
 
     for (int i = 1; i < size; ++i) {
-      output = MergeTwoSortedVectors(output,
-                                     gathered_parts[i]);
+      output = MergeTwoSortedVectors(output, gathered_parts[i]);
     }
   }
 

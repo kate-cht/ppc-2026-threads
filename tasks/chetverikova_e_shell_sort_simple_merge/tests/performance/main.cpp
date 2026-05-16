@@ -1,17 +1,16 @@
 #include <gtest/gtest.h>
+#include <mpi.h>
 
 #include <algorithm>
 #include <cstddef>
 #include <random>
 
-#include <mpi.h>
-
+#include "chetverikova_e_shell_sort_simple_merge/all/include/ops_all.hpp"
 #include "chetverikova_e_shell_sort_simple_merge/common/include/common.hpp"
 #include "chetverikova_e_shell_sort_simple_merge/omp/include/ops_omp.hpp"
 #include "chetverikova_e_shell_sort_simple_merge/seq/include/ops_seq.hpp"
 #include "chetverikova_e_shell_sort_simple_merge/stl/include/ops_stl.hpp"
 #include "chetverikova_e_shell_sort_simple_merge/tbb/include/ops_tbb.hpp"
-#include "chetverikova_e_shell_sort_simple_merge/all/include/ops_all.hpp"
 #include "util/include/perf_test_util.hpp"
 
 namespace chetverikova_e_shell_sort_simple_merge {
