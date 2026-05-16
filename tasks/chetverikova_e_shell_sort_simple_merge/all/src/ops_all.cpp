@@ -74,10 +74,9 @@ std::vector<int> ChetverikovaEShellSortSimpleMergeALL::MergeTwoSortedVectors(con
   return result;
 }
 
-void ChetverikovaEShellSortSimpleMergeALL::CalculateCountsAndDisplacements(int global_size,
-                                     int processes_count,
-                                     std::vector<int>& counts,
-                                     std::vector<int>& displacements) {
+void ChetverikovaEShellSortSimpleMergeALL::CalculateCountsAndDisplacements(int global_size, int processes_count,
+                                                                           std::vector<int> &counts,
+                                                                           std::vector<int> &displacements) {
   const int base = global_size / processes_count;
   const int remainder = global_size % processes_count;
 
@@ -90,8 +89,7 @@ void ChetverikovaEShellSortSimpleMergeALL::CalculateCountsAndDisplacements(int g
   }
 }
 
-std::vector<int> ChetverikovaEShellSortSimpleMergeALL::MergeLocalBuffers(
-    std::vector<std::vector<int>>& local_buffers) {
+std::vector<int> ChetverikovaEShellSortSimpleMergeALL::MergeLocalBuffers(std::vector<std::vector<int>> &local_buffers) {
   if (local_buffers.empty()) {
     return {};
   }
@@ -105,7 +103,6 @@ std::vector<int> ChetverikovaEShellSortSimpleMergeALL::MergeLocalBuffers(
   return result;
 }
 
-
 bool ChetverikovaEShellSortSimpleMergeALL::RunImpl() {
   int rank = 0;
   int processes_count = 0;
@@ -113,7 +110,7 @@ bool ChetverikovaEShellSortSimpleMergeALL::RunImpl() {
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &processes_count);
 
-  auto& output = GetOutput();
+  auto &output = GetOutput();
 
   int global_size = 0;
 
@@ -127,33 +124,23 @@ bool ChetverikovaEShellSortSimpleMergeALL::RunImpl() {
   std::vector<int> displacements(processes_count);
 
   if (rank == 0) {
-    CalculateCountsAndDisplacements(global_size, processes_count,
-                                    sendcounts, displacements);
+    CalculateCountsAndDisplacements(global_size, processes_count, sendcounts, displacements);
   }
 
   int local_size = 0;
 
-  MPI_Scatter(rank == 0 ? sendcounts.data() : nullptr,
-              1, MPI_INT, &local_size, 1, MPI_INT, 0, MPI_COMM_WORLD);
+  MPI_Scatter(rank == 0 ? sendcounts.data() : nullptr, 1, MPI_INT, &local_size, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
   std::vector<int> local_data(local_size);
 
-  const int* send_buffer =
-      rank == 0 ? GetInput().data() : nullptr;
+  const int *send_buffer = rank == 0 ? GetInput().data() : nullptr;
 
-  MPI_Scatterv(send_buffer,
-               rank == 0 ? sendcounts.data() : nullptr,
-               rank == 0 ? displacements.data() : nullptr,
-               MPI_INT, local_data.data(), local_size,
-               MPI_INT, 0, MPI_COMM_WORLD);
+  MPI_Scatterv(send_buffer, rank == 0 ? sendcounts.data() : nullptr, rank == 0 ? displacements.data() : nullptr,
+               MPI_INT, local_data.data(), local_size, MPI_INT, 0, MPI_COMM_WORLD);
 
-  const std::size_t threads =
-      std::max(1, omp_get_max_threads());
+  const std::size_t threads = std::max(1, omp_get_max_threads());
 
-  const std::size_t parts =
-      std::max<std::size_t>(
-          1,
-          std::min<std::size_t>(threads, local_data.size()));
+  const std::size_t parts = std::max<std::size_t>(1, std::min<std::size_t>(threads, local_data.size()));
 
   std::vector<std::vector<int>> local_buffers(parts);
 
@@ -174,34 +161,27 @@ bool ChetverikovaEShellSortSimpleMergeALL::RunImpl() {
     indices.push_back(next);
   }
 
-#pragma omp parallel for default(none) \
-    shared(local_data, local_buffers, indices, parts) \
-    schedule(static)
+#pragma omp parallel for default(none) shared(local_data, local_buffers, indices, parts) schedule(static)
   for (size_t i = 0; i < parts; ++i) {
     const size_t left = indices[i];
     const size_t right = indices[i + 1];
 
-    std::vector<int> temp(
-        local_data.begin() + static_cast<std::ptrdiff_t>(left),
-        local_data.begin() + static_cast<std::ptrdiff_t>(right));
+    std::vector<int> temp(local_data.begin() + static_cast<std::ptrdiff_t>(left),
+                          local_data.begin() + static_cast<std::ptrdiff_t>(right));
 
     ShellSort(temp);
 
     local_buffers[i] = std::move(temp);
   }
 
-  std::vector<int> local_sorted =
-      MergeLocalBuffers(local_buffers);
+  std::vector<int> local_sorted = MergeLocalBuffers(local_buffers);
 
-  const int local_sorted_size =
-      static_cast<int>(local_sorted.size());
+  const int local_sorted_size = static_cast<int>(local_sorted.size());
 
   std::vector<int> recvcounts(processes_count);
   std::vector<int> recvdisplacements(processes_count);
 
-  MPI_Gather(&local_sorted_size, 1, MPI_INT,
-             rank == 0 ? recvcounts.data() : nullptr,
-             1, MPI_INT, 0, MPI_COMM_WORLD);
+  MPI_Gather(&local_sorted_size, 1, MPI_INT, rank == 0 ? recvcounts.data() : nullptr, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
   int total_size = 0;
 
@@ -214,12 +194,9 @@ bool ChetverikovaEShellSortSimpleMergeALL::RunImpl() {
     output.resize(total_size);
   }
 
-  MPI_Gatherv(local_sorted.data(),
-              local_sorted_size, MPI_INT,
-              rank == 0 ? output.data() : nullptr,
-              rank == 0 ? recvcounts.data() : nullptr,
-              rank == 0 ? recvdisplacements.data() : nullptr,
-              MPI_INT, 0, MPI_COMM_WORLD);
+  MPI_Gatherv(local_sorted.data(), local_sorted_size, MPI_INT, rank == 0 ? output.data() : nullptr,
+              rank == 0 ? recvcounts.data() : nullptr, rank == 0 ? recvdisplacements.data() : nullptr, MPI_INT, 0,
+              MPI_COMM_WORLD);
 
   if (rank == 0) {
     std::vector<std::vector<int>> gathered_parts(processes_count);
@@ -228,9 +205,7 @@ bool ChetverikovaEShellSortSimpleMergeALL::RunImpl() {
       const int begin = recvdisplacements[i];
       const int end = begin + recvcounts[i];
 
-      gathered_parts[i] = std::vector<int>(
-          output.begin() + begin,
-          output.begin() + end);
+      gathered_parts[i] = std::vector<int>(output.begin() + begin, output.begin() + end);
     }
 
     output = std::move(gathered_parts[0]);
