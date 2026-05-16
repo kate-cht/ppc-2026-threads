@@ -6,7 +6,6 @@
 #include <algorithm>
 #include <cstddef>
 #include <iterator>
-#include <stdexcept>
 #include <utility>
 #include <vector>
 
@@ -68,10 +67,9 @@ void ChetverikovaEShellSortSimpleMergeALL::ShellSort(std::vector<int> &data) {
 
 std::vector<int> ChetverikovaEShellSortSimpleMergeALL::MergeTwoSortedVectors(const std::vector<int> &a,
                                                                              const std::vector<int> &b) {
-  std::vector<int> result;
-  result.reserve(a.size() + b.size());
+  std::vector<int> result(a.size() + b.size());
 
-  std::merge(a.begin(), a.end(), b.begin(), b.end(), std::back_inserter(result));
+  std::merge(a, b, std::back_inserter(result));
 
   return result;
 }
@@ -204,7 +202,7 @@ bool ChetverikovaEShellSortSimpleMergeALL::RunImpl() {
 }
 
 bool ChetverikovaEShellSortSimpleMergeALL::PostProcessingImpl() {
-  int rank = 0;
+  /*int rank = 0;
 
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
@@ -220,7 +218,7 @@ bool ChetverikovaEShellSortSimpleMergeALL::PostProcessingImpl() {
     GetOutput().resize(output_size);
   }
 
-  MPI_Bcast(GetOutput().data(), output_size, MPI_INT, 0, MPI_COMM_WORLD);
+  MPI_Bcast(GetOutput().data(), output_size, MPI_INT, 0, MPI_COMM_WORLD);*/
 
   return true;
 }
