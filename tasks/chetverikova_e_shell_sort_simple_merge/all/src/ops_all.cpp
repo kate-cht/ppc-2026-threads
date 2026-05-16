@@ -156,10 +156,10 @@ bool ChetverikovaEShellSortSimpleMergeALL::RunImpl() {
 
 #pragma omp parallel for default(none) shared(local_data, buffers, borders, parts)
   for (size_t i = 0; i < parts; ++i) {
-    using diff_t = std::vector<int>::difference_type;
+    using DiffT = std::vector<int>::difference_type;
 
-    auto begin = local_data.begin() + static_cast<diff_t>(borders[i]);
-    auto end = local_data.begin() + static_cast<diff_t>(borders[i + 1]);
+    auto begin = local_data.begin() + static_cast<DiffT>(borders[i]);
+    auto end = local_data.begin() + static_cast<DiffT>(borders[i + 1]);
 
     std::vector<int> temp(begin, end);
 
