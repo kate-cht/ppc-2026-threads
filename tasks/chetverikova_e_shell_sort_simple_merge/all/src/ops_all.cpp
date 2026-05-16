@@ -202,7 +202,7 @@ bool ChetverikovaEShellSortSimpleMergeALL::RunImpl() {
 }
 
 bool ChetverikovaEShellSortSimpleMergeALL::PostProcessingImpl() {
-  /*int rank = 0;
+  int rank = 0;
 
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
@@ -218,7 +218,7 @@ bool ChetverikovaEShellSortSimpleMergeALL::PostProcessingImpl() {
     GetOutput().resize(output_size);
   }
 
-  MPI_Bcast(GetOutput().data(), output_size, MPI_INT, 0, MPI_COMM_WORLD);*/
+  MPI_Bcast(GetOutput().data(), output_size, MPI_INT, 0, MPI_COMM_WORLD);
 
   return true;
 }
