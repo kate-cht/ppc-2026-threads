@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <array>
 #include <cstddef>
+#include <functional>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -10,7 +11,10 @@
 #include "util/include/func_test_util.hpp"
 #include "util/include/util.hpp"
 #include "yushkova_p_hoare_sorting_simple_merging/common/include/common.hpp"
+#include "yushkova_p_hoare_sorting_simple_merging/omp/include/ops_omp.hpp"
 #include "yushkova_p_hoare_sorting_simple_merging/seq/include/ops_seq.hpp"
+#include "yushkova_p_hoare_sorting_simple_merging/stl/include/ops_stl.hpp"
+#include "yushkova_p_hoare_sorting_simple_merging/tbb/include/ops_tbb.hpp"
 
 namespace yushkova_p_hoare_sorting_simple_merging {
 
@@ -30,13 +34,17 @@ class YushkovaPRunFuncTestsThreads : public ppc::util::BaseRunFuncTests<InType, 
     if (output_data.size() != input_data_.size()) {
       return false;
     }
-    if (!std::ranges::is_sorted(output_data)) {
+    if (!IsSorted(output_data)) {
       return false;
     }
 
     std::vector<int> expected = input_data_;
     std::ranges::sort(expected);
     return output_data == expected;
+  }
+
+  [[nodiscard]] static bool IsSorted(const OutType &data) {
+    return std::ranges::adjacent_find(data, std::greater<>()) == data.end();
   }
 
   InType GetTestInputData() final {
@@ -65,8 +73,14 @@ const std::array<TestType, 10> kTestParam = {
     std::make_tuple(std::vector<int>{9, 9, 8, 8, 7, 7, 6, 6, 5, 5}, "pair_duplicates"),
     std::make_tuple(std::vector<int>{1000, -1000, 500, -500, 0, 250, -250}, "wide_range")};
 
-const auto kTestTasksList = ppc::util::AddFuncTask<YushkovaPHoareSortingSimpleMergingSEQ, InType>(
-    kTestParam, PPC_SETTINGS_yushkova_p_hoare_sorting_simple_merging);
+const auto kTestTasksList = std::tuple_cat(ppc::util::AddFuncTask<YushkovaPHoareSortingSimpleMergingSEQ, InType>(
+                                               kTestParam, PPC_SETTINGS_yushkova_p_hoare_sorting_simple_merging),
+                                           ppc::util::AddFuncTask<YushkovaPHoareSortingSimpleMergingOMP, InType>(
+                                               kTestParam, PPC_SETTINGS_yushkova_p_hoare_sorting_simple_merging),
+                                           ppc::util::AddFuncTask<YushkovaPHoareSortingSimpleMergingSTL, InType>(
+                                               kTestParam, PPC_SETTINGS_yushkova_p_hoare_sorting_simple_merging),
+                                           ppc::util::AddFuncTask<YushkovaPHoareSortingSimpleMergingTBB, InType>(
+                                               kTestParam, PPC_SETTINGS_yushkova_p_hoare_sorting_simple_merging));
 
 const auto kGtestValues = ppc::util::ExpandToValues(kTestTasksList);
 
