@@ -144,13 +144,13 @@ cmake -S . -B build -D USE_FUNC_TESTS=ON -D USE_PERF_TESTS=ON -D CMAKE_BUILD_TYP
 cmake --build build --config Release --parallel
 ```
 
-# Функциональные тесты
+### Функциональные тесты
 
 ```bash
 .\build\bin\ppc_func_tests.exe --gtest_repeat=5 --gtest_filter="*chetverikova_e_shell_sort_simple_merge_seq_enabled*" 
 ```
 
-# Производительность
+### Производительность
 
 ```bash
 .\build\bin\ppc_perf_tests.exe --gtest_repeat=5 --gtest_filter="*chetverikova_e_shell_sort_simple_merge_seq_enabled*" 

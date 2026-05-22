@@ -156,13 +156,13 @@ cmake -S . -B build -D USE_FUNC_TESTS=ON -D USE_PERF_TESTS=ON -D CMAKE_BUILD_TYP
 cmake --build build --config Release --parallel
 ```
 
-# Функциональные тесты
+### Функциональные тесты
 
 ```bash
 mpiexec -n 2 .\build\bin\ppc_func_tests.exe --gtest_repeat=5 --running-type=threads --gtest_filter="*chetverikova_e_shell_sort_simple_merge_all_enabled*" PPC_NUM_THREAD=2
 ```
 
-# Производительность
+### Производительность
 
 ```bash
 mpiexec -n 2 .\build\bin\ppc_perf_tests.exe --gtest_repeat=5 --running-type=threads --gtest_filter="*chetverikova_e_shell_sort_simple_merge_all_enabled*" PPC_NUM_THREAD=2
@@ -203,7 +203,7 @@ OpenMP для локальной обработки.
 
 ### MPI-распределение
 
-```
+```bash
 MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 MPI_Comm_size(MPI_COMM_WORLD, &size);
 
@@ -217,7 +217,7 @@ MPI_Scatterv(input_ptr, sendcounts.data(), displs.data(), MPI_INT,
 
 ### OpenMP часть
 
-```
+```bash
 #pragma omp parallel for default(none) shared(local_data, buffers, borders, parts)
 for (size_t i = 0; i < parts; ++i) {
   std::vector<int> temp(
