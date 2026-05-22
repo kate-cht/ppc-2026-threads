@@ -66,7 +66,7 @@
 
 После создания всех потоков выполняется:
 
-```
+```bash
 for (auto &th : threads) {
   th.join();
 }
@@ -91,7 +91,7 @@ join() вызывается только после завершения цик�
 Для потока tid:  `[start, end)`
 где:
 
-```
+```bash
 start = tid * block_size
 end = min(start + block_size, n)
 ```
