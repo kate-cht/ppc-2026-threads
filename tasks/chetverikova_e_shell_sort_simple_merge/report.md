@@ -35,7 +35,6 @@
 - Компилятор: MSVC  
 - Сборка: Release  
 
-
 **Параметры тестирования**
 
 - Массив из 4 000 000 псевдослучайных целых чисел.
@@ -44,13 +43,13 @@
 - **Efficiency** = speedup / workers.
 - Для ALL: workers = ranks × threads.
 
-
 ### Сборка
 
 ```bash
 cmake -S . -B build -D USE_FUNC_TESTS=ON -D USE_PERF_TESTS=ON -D CMAKE_BUILD_TYPE=Release
 cmake --build build --config Release --parallel
 ```
+
 Команды запуска тестов находятся в локальных отчётах:
 
 - `seq/report.md`
@@ -79,7 +78,6 @@ cmake --build build --config Release --parallel
 | stl        | 4                          | 2.106          | 1.29           | 0.32       |
 | all        | 2 x 1                      | 0.639          | 4.23           | 2.12       |
 | all        | 2 x 2                      | 0.594          | 4.56           | 0.55       |
-
 
 ## 6. Интерпретация различий
 

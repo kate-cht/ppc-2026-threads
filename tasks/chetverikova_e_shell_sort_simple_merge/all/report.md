@@ -5,7 +5,6 @@
 - Технология: ALL
 - Вариант: 15
 
-
 ## 1. Контекст
 
 Гибридная версия объединяет *MPI* и *OpenMP* для реализации двухуровневого параллелизма: межпроцессного и внутрипроцессного.
@@ -19,6 +18,7 @@ SEQ-версия используется как baseline для оценки у
 ## 2. Постановка задачи
 
 Требуется реализовать гибридную сортировку массива целых чисел с использованием:
+
 1. MPI для распределения данных;
 2. OpenMP для внутрипроцессного распараллеливания.
 
@@ -43,6 +43,7 @@ SEQ-версия используется как baseline для оценки у
 **Роли rank-ов**
 
 `Rank 0` отвечает за:
+
 - хранение исходного массива;
 - распределение данных;
 - сбор локальных результатов;
@@ -83,7 +84,8 @@ SEQ-версия используется как baseline для оценки у
 
 Для каждого потока вычисляются границы: `borders[i]` и `borders[i + 1]`.
 
-Каждый поток: 
+Каждый поток:
+
 - копирует собственный диапазон;
 - выполняет локальный Shell Sort;
 - сохраняет результат в: `buffers[i]`
@@ -142,10 +144,13 @@ cmake --build build --config Release --parallel
 ```
 
 # Функциональные тесты
+
 ```bash
 mpiexec -n 2 .\build\bin\ppc_func_tests.exe --gtest_repeat=5 --running-type=threads --gtest_filter="*chetverikova_e_shell_sort_simple_merge_all_enabled*" PPC_NUM_THREAD=2
 ```
+
 # Производительность
+
 ```bash
 mpiexec -n 2 .\build\bin\ppc_perf_tests.exe --gtest_repeat=5 --running-type=threads --gtest_filter="*chetverikova_e_shell_sort_simple_merge_all_enabled*" PPC_NUM_THREAD=2
 ```
@@ -164,6 +169,7 @@ mpiexec -n 2 .\build\bin\ppc_perf_tests.exe --gtest_repeat=5 --running-type=thre
 Лучший результат достигается при конфигурации 2 × 2 (0.594 c).
 
 Основные наблюдения:
+
 - при 2 × 1 наблюдается суперлинейный speedup (4.23), что объясняется уменьшением размера локальных задач и улучшением кэш-локальности;
 - при увеличении числа потоков внутри процесса (2 × 2 → 2 × 3) производительность падает;
 - эффективность ограничивается накладными расходами OpenMP и MPI-обменами.
@@ -179,6 +185,7 @@ mpiexec -n 2 .\build\bin\ppc_perf_tests.exe --gtest_repeat=5 --running-type=thre
 ## Приложения
 
 **MPI-распределение**
+
 ```
 MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 MPI_Comm_size(MPI_COMM_WORLD, &size);
