@@ -7,12 +7,12 @@
 
 namespace chetverikova_e_shell_sort_simple_merge {
 
-class ChetverikovaEShellSortSimpleMergeSEQ : public BaseTask {
+class ChetverikovaEShellSortSimpleMergeOMP : public BaseTask {
  public:
   static constexpr ppc::task::TypeOfTask GetStaticTypeOfTask() {
-    return ppc::task::TypeOfTask::kSEQ;
+    return ppc::task::TypeOfTask::kOMP;
   }
-  explicit ChetverikovaEShellSortSimpleMergeSEQ(const InType &in);
+  explicit ChetverikovaEShellSortSimpleMergeOMP(const InType &in);
 
  private:
   bool ValidationImpl() override;
